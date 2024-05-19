@@ -1,0 +1,25 @@
+ubuntu-24.04-live-server-amd64.iso (LTS release)
+
+Boot from the ISO and follow the dialogs.
+    Set system name
+    Set first user to Admin with a username of setup and basic password
+    Select default partition scheme
+    Set 'No automatic updates'
+    Install the OpenSSH server package
+    Install GRUB
+
+Use terminal to get IPA for remote login
+
+  ip a
+
+Get root
+
+  sudo su
+  cd
+
+Setup root paths
+
+  mkdir ~/scripts
+  mkdir ~/setup
+  mkdir ~/source
+

@@ -48,3 +48,7 @@
 
 # Update logrotate
     nano -w /etc/logrotate.d/rsyslog
+
+# Update cron schedules (Set hourly to run on the hour and daily, weekly, and monthly to run at midnight)
+    cp /etc/crontab /etc/crontab.distro
+    nano -w /etc/crontab

@@ -20,7 +20,7 @@
     mkdir ~/setup
     mkdir ~/source
 
-# Setup update script
+# Setup update script (update.ubuntu.system.sh file)
     nano -w /usr/local/bin/update.ubuntu.system.sh
     chmod 755 /usr/local/bin/update.ubuntu.system.sh
 
@@ -30,7 +30,7 @@
 # Add Network Tools
     apt install -y net-tools
 
-# Create a Password Generator
+# Create a Password Generator (genpw file)
     nano -w /usr/local/bin/genpw
     chmod 755 /usr/local/bin/genpw
 
@@ -40,15 +40,15 @@
 # Update Timezone
     dpkg-reconfigure tzdata
 
-# Setup initial crontab for root
+# Setup initial crontab for root (crontab.e file)
     crontab -e
+
+# Update cron schedules (crontab.sch file)
+    cp /etc/crontab /etc/crontab.distro
+    nano -w /etc/crontab
 
 # Check Time Sync
     systemctl status systemd-timesyncd
 
-# Update logrotate
+# Update logrotate (ryslog file)
     nano -w /etc/logrotate.d/rsyslog
-
-# Update cron schedules (Set hourly to run on the hour and daily, weekly, and monthly to run at midnight)
-    cp /etc/crontab /etc/crontab.distro
-    nano -w /etc/crontab

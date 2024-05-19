@@ -46,3 +46,5 @@
 # Check Time Sync
     systemctl status systemd-timesyncd
 
+# Update logrotate
+    nano -w /etc/logrotate.d/rsyslog

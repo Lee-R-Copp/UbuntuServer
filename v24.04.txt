@@ -40,5 +40,9 @@
 # Update Timezone
     dpkg-reconfigure tzdata
 
-Setup initial crontab for root
+# Setup initial crontab for root
     crontab -e
+
+# Check Time Sync
+    systemctl status systemd-timesyncd
+

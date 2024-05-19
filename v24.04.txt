@@ -31,3 +31,14 @@
     apt install -y net-tools
 
 # Create a Password Generator
+    nano -w /usr/local/bin/genpw
+    chmod 755 /usr/local/bin/genpw
+
+# Setup file search
+    apt install -y apt-file && apt-file update
+
+# Update Timezone
+    dpkg-reconfigure tzdata
+
+Setup initial crontab for root
+    crontab -e

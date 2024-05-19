@@ -1,6 +1,6 @@
-ubuntu-24.04-live-server-amd64.iso (LTS release)
+# ubuntu-24.04-live-server-amd64.iso (LTS release)
 
-Boot from the ISO and follow the dialogs.
+# Boot from the ISO and follow the dialogs.
     Set system name
     Set first user to Admin with a username of setup and basic password
     Select default partition scheme
@@ -8,18 +8,26 @@ Boot from the ISO and follow the dialogs.
     Install the OpenSSH server package
     Install GRUB
 
-Use terminal to get IPA for remote login
+# Use terminal to get IPA for remote login
+    ip a
 
-  ip a
+# Get root
+    sudo su
+    cd
 
-Get root
+# Setup root paths
+    mkdir ~/scripts
+    mkdir ~/setup
+    mkdir ~/source
 
-  sudo su
-  cd
+# Setup update script
+    nano -w /usr/local/bin/update.ubuntu.system.sh
+    chmod 755 /usr/local/bin/update.ubuntu.system.sh
 
-Setup root paths
+# Add a source of Entropy for Virtual Machines.
+    apt install -y haveged
 
-  mkdir ~/scripts
-  mkdir ~/setup
-  mkdir ~/source
+# Add Network Tools
+    apt install -y net-tools
 
+# Create a Password Generator

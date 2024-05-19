@@ -52,3 +52,17 @@
 
 # Update logrotate (ryslog file)
     nano -w /etc/logrotate.d/rsyslog
+
+#
+# Optional Packages
+#
+
+# Build Packages
+    apt install -y build-essential
+    apt install -y linux-headers-$(uname -r)
+
+# Reboot to apply/test
+    reboot
+
+# Shutdown to detach the install ISO of a VM and to take a snapshot
+    shutdown -h now

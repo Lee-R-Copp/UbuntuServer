@@ -65,4 +65,5 @@
     reboot
 
 # Shutdown to detach the install ISO of a VM and to take a snapshot
+    sudo su
     shutdown -h now

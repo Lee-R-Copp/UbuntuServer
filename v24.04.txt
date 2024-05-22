@@ -67,12 +67,20 @@
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 #
-# Optional Packages
+# Options
 #
 
 # Build Packages
     apt install -y build-essential
     apt install -y linux-headers-$(uname -r)
+
+# Firewall
+    ufw default deny incoming
+    ufw default allow outgoing
+    ufw allow ssh
+    ufw enable
+    ufw status
+    ufw status numbered
 
 # Reboot to apply/test
     reboot

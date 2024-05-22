@@ -1,3 +1,4 @@
+# Set default root crontab entry
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 

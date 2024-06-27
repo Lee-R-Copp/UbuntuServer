@@ -21,8 +21,8 @@
     mkdir ~/source
 
 # Setup update script (update.ubuntu.system.sh file)
-    nano -w /usr/local/bin/update.ubuntu.system.sh
-    chmod 755 /usr/local/bin/update.ubuntu.system.sh
+    nano -w /usr/local/bin/update.system.sh
+    chmod 755 /usr/local/bin/update.system.sh
 
 # Add a source of Entropy for Virtual Machines.
     apt install -y haveged

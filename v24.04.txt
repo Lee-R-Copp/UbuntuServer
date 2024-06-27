@@ -20,7 +20,7 @@
     mkdir ~/setup
     mkdir ~/source
 
-# Setup update script (update.ubuntu.system.sh file)
+# Setup update script (update.system.sh file)
     nano -w /usr/local/bin/update.system.sh
     chmod 755 /usr/local/bin/update.system.sh
 

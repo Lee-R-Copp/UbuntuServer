@@ -1,4 +1,5 @@
 # Replace default cron schedule with this file
+SHELL=/bin/sh
 #
 # m h dom mon dow user  command
 0  *    * * *   root    cd / && run-parts --report /etc/cron.hourly

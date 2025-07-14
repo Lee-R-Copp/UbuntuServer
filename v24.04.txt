@@ -85,6 +85,10 @@
     /mnt/cdrom/Linux/install.sh
     reboot
 
+# Set Static IP (netplan.yaml) file
+    edit /etc/netplan/50-cloud-init.yaml
+    netplan apply
+
 # Shutdown to detach any ISOs for a VM and to take a snapshot
     sudo su
     shutdown -h now

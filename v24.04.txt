@@ -89,6 +89,10 @@
     edit /etc/netplan/50-cloud-init.yaml
     netplan apply
 
+# Enable password less sudo access to user
+    edit /etc/sudoers.d/setup-nopasswd
+        setup ALL=(ALL) NOPASSWD:ALL
+
 # Shutdown to detach any ISOs for a VM and to take a snapshot
     sudo su
     shutdown -h now

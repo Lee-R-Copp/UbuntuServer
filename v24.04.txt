@@ -89,7 +89,7 @@
     edit /etc/netplan/50-cloud-init.yaml
     netplan apply
 
-# Enable password less sudo access to user
+# Enable sudo access without a password to the setup user
     edit /etc/sudoers.d/setup-nopasswd
         setup ALL=(ALL) NOPASSWD:ALL
 

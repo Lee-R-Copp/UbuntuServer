@@ -74,8 +74,6 @@
     ufw enable
     ufw status
     ufw status numbered
-
-# Reboot to apply/test
     reboot
 
 # Install xe-guest-utilities (If running on XenHypervisor, XCP, etc..)

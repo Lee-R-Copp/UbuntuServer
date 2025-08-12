@@ -57,21 +57,6 @@ clean_history() {
 }
 
 #
-# Configure Firewall
-#
-configure_firewall() {
-  echo "▶ Configuring Firewall..."
-
-  ufw default deny incoming
-  ufw default allow outgoing
-  ufw allow ssh
-  ufw enable
-  ufw status
-  ufw status numbered  # Backup the original configuration file
-  echo "✔ Firewall configured."
-}
-
-#
 # Hardens OpenSSL configuration to modern standards.
 #
 configure_openssl() {
@@ -160,7 +145,6 @@ main() {
   install_packages
   configure_openssl
   configure_timezone
-  configure_firewall
   restart_services
   clean_history
   

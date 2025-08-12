@@ -60,7 +60,7 @@ clean_history() {
 # Configure Firewall
 #
 configure_firewall() {
-  echo "▶ Configuring Firewall...\e[0m"
+  echo "▶ Configuring Firewall..."
 
   ufw default deny incoming
   ufw default allow outgoing
@@ -160,7 +160,7 @@ main() {
   install_packages
   configure_openssl
   configure_timezone
-  configure_firewall()
+  configure_firewall
   restart_services
   clean_history
   

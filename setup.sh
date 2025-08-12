@@ -37,14 +37,12 @@ install_packages() {
 
   echo "▶ Installing all required packages..."
   apt-get install -y \
-    btop \
-    cmatrix \
-    curl \
-    wget \
+    apt-file \
+    haveged \
     nano \
-    unzip \
     net-tools \
-    git \
+    wget \
+    unzip \
     2>&1 | grep -v "WARNING: apt does not have a stable CLI interface"
   echo "✔ Package installation complete."
 }

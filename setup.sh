@@ -27,7 +27,7 @@ clean_history() {
     local history_files=(".bash_history" ".zsh_history" ".fish_history")
 
     # Clear history for the root user.
-    echo "  - Clearing history for root user..."
+    echo "  - Clearing history for user: root"
     for hist_file in "${history_files[@]}"; do
         # Check if the history file exists for root before trying to clear it.
         if [ -f "/root/${hist_file}" ]; then
@@ -54,6 +54,21 @@ clean_history() {
 
     echo "✔ On-disk history files cleared."
     echo "ℹ NOTE: To clear the history of your CURRENT terminal session, please run 'history -c' after this script completes."
+}
+
+#
+# Configure Firewall
+#
+configure_firewall() {
+  echo "▶ Configuring Firewall...\e[0m"
+
+  ufw default deny incoming
+  ufw default allow outgoing
+  ufw allow ssh
+  ufw enable
+  ufw status
+  ufw status numbered  # Backup the original configuration file
+  echo "✔ Firewall configured."
 }
 
 #
@@ -145,9 +160,10 @@ main() {
   install_packages
   configure_openssl
   configure_timezone
+  configure_firewall()
   restart_services
   clean_history
-
+  
   echo -e "\n\e[1;32m✅ System setup and configuration are complete.\e[0m"
 }
 

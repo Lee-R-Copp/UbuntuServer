@@ -33,6 +33,7 @@
 # Create a Password Generator (genpw file)
     nano -w /usr/local/bin/genpw
     chmod 755 /usr/local/bin/genpw
+    genpw
 
 # Setup file search
     apt install -y apt-file && apt-file update

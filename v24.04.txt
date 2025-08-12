@@ -85,11 +85,11 @@
     reboot
 
 # Set Static IP (netplan.yaml) file
-    edit /etc/netplan/50-cloud-init.yaml
+    nano -w /etc/netplan/50-cloud-init.yaml
     netplan apply
 
 # Enable sudo access without a password to the setup user
-    edit /etc/sudoers.d/setup-nopasswd
+    nano -w /etc/sudoers.d/setup-nopasswd
         setup ALL=(ALL) NOPASSWD:ALL
 
 # Shutdown to detach any ISOs for a VM and to take a snapshot

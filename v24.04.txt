@@ -93,5 +93,14 @@
         setup ALL=(ALL) NOPASSWD:ALL
 
 # Shutdown to detach any ISOs for a VM and to take a snapshot
-    sudo su
     shutdown -h now
+
+#
+# Post operations
+#
+
+# Reset machine id (changes MAC)
+    rm /etc/machine-id
+    systemd-machine-id-setup
+
+

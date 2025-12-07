@@ -4,9 +4,9 @@ network:
   ethernets:
     enX0:
       addresses:
-        - 192.168.199.6/24
+        - xxx.xxx.xxx.xxx/24
       nameservers:
-        addresses: [192.168.199.1]
+        addresses: [xxx.xxx.xxx.1]
       routes:
         - to: default
-          via: 192.168.199.1
+          via: xxx.xxx.xxx.1

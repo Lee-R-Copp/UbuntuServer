@@ -23,6 +23,7 @@
 # Setup update script (update.system.sh file)
     nano -w /usr/local/bin/update.system.sh
     chmod 755 /usr/local/bin/update.system.sh
+    update.system.sh
 
 # Add a source of Entropy for Virtual Machines.
     apt install -y haveged
@@ -41,24 +42,48 @@
 # Update Timezone
     dpkg-reconfigure tzdata
 
-# Setup initial crontab for root (crontab.e file)
+# Optional: setup initial crontab for root (crontab.e file)
     crontab -e
 
-# Update cron schedules (crontab.sch file)
+# Optional: update cron schedules (crontab.sch file)
     cp /etc/crontab /etc/crontab.distro
     nano -w /etc/crontab
 
 # Check Time Sync
     systemctl status systemd-timesyncd
 
-# Update logrotate (ryslog file)
+# Optional: update logrotate (ryslog file)
     nano -w /etc/logrotate.d/rsyslog
 
 # Update bash settings for users: 'setup' and 'root' (user.bashrc file)
 
 * Generate SSH keys for users: 'setup' and 'root'
     ssh-keygen -t rsa
+    ssh-keygen -t ed25519
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+    cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys
+
+# Enable sudo access without a password for the setup user
+    nano -w /etc/sudoers.d/setup-nopasswd
+        setup ALL=(ALL) NOPASSWD:ALL
+
+# Install guest-utilities (If running on Proxmox, XenHypervisor, XCP, etc..)
+    # Proxmox
+    apt install -y qemu-guest-agent
+    systemctl enable --now qemu-guest-agent
+    shutdown -h now
+    # enable QEMU support in Proxmox (VM -> Options -> QEMU Guest Agent, Start)
+    systemctl status qemu-guest-agent
+
+    # XCP
+    # insert 'guest-tools.iso'
+    mkdir /mnt/cdrom
+    mount /dev/cdrom /mnt/cdrom
+    /mnt/cdrom/Linux/install.sh
+    systemctl reboot
+
+# Shutdown to detach any ISOs for a VM and to take a snapshot
+    shutdown -h now
 
 #
 # Options
@@ -77,23 +102,9 @@
     ufw status numbered
     reboot
 
-# Install xe-guest-utilities (If running on XenHypervisor, XCP, etc..)
-    insert 'guest-tools.iso'
-    mkdir /mnt/cdrom
-    mount /dev/cdrom /mnt/cdrom
-    /mnt/cdrom/Linux/install.sh
-    reboot
-
 # Set Static IP (netplan.yaml) file
     nano -w /etc/netplan/50-cloud-init.yaml
     netplan apply
-
-# Enable sudo access without a password to the setup user
-    nano -w /etc/sudoers.d/setup-nopasswd
-        setup ALL=(ALL) NOPASSWD:ALL
-
-# Shutdown to detach any ISOs for a VM and to take a snapshot
-    shutdown -h now
 
 #
 # Post operations
@@ -102,5 +113,3 @@
 # Reset machine id (changes MAC)
     rm /etc/machine-id
     systemd-machine-id-setup
-
-

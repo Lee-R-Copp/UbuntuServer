@@ -36,7 +36,7 @@
     chmod 755 /usr/local/bin/genpw
     genpw
 
-# Setup file search
+# Setup file search (skip on micro servers)
     apt install -y apt-file && apt-file update
 
 # Update Timezone

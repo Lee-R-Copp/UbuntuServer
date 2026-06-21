@@ -89,6 +89,14 @@
 # Options
 #
 
+# Add users
+
+  adduser username
+
+New password:
+Retype new password:
+
+
 # Build Packages
     apt install -y build-essential
     apt install -y linux-headers-$(uname -r)

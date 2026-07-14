@@ -52,13 +52,20 @@ EOF
 }
 
 configure_ssh() {
+  local auth_keys="/root/.ssh/authorized_keys"
+
+  if [[ ! -s "$auth_keys" ]]; then
+    warn "Root authorized_keys is empty; skipping SSH hardening until a key is installed."
+    return 0
+  fi
+
   ensure_dir /etc/ssh/sshd_config.d
 
   cat >/etc/ssh/sshd_config.d/99-bootstrap.conf <<'EOF'
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 ChallengeResponseAuthentication no
-PermitRootLogin no
+PermitRootLogin prohibit-password
 PubkeyAuthentication yes
 X11Forwarding no
 ClientAliveInterval 300

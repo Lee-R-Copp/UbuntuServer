@@ -335,13 +335,6 @@ require_ubuntu() {
 
 show_summary() {
   log "Bootstrap complete"
-  printf '%s\n' \
-    "User: ${BOOTSTRAP_USER}" \
-    "Home: ${BOOTSTRAP_HOME}" \
-    "Editor: nano" \
-    "Firewall: manage outside the host if desired" \
-    "SSH: password auth disabled, root login disabled" \
-    "Automatic apt updates: disabled"
 }
 
 upgrade_system() {

@@ -59,6 +59,11 @@ configure_ssh() {
     return 0
   fi
 
+  if ! prompt_yes_no "Apply SSH hardening now for root login by key only?" "N"; then
+    log "Skipping SSH hardening by user choice"
+    return 0
+  fi
+
   ensure_dir /etc/ssh/sshd_config.d
 
   cat >/etc/ssh/sshd_config.d/99-bootstrap.conf <<'EOF'
@@ -263,6 +268,29 @@ main() {
 
 pkg_installed() {
   dpkg -s "$1" >/dev/null 2>&1
+}
+
+prompt_yes_no() {
+  local prompt="$1"
+  local default="${2:-N}"
+  local reply
+
+  while true; do
+    read -r -p "${prompt} [y/N]: " reply
+    reply="${reply:-$default}"
+
+    case "$reply" in
+      y|Y|yes|YES)
+        return 0
+        ;;
+      n|N|no|NO)
+        return 1
+        ;;
+      *)
+        printf 'Please answer y or n.\n'
+        ;;
+    esac
+  done
 }
 
 require_root() {

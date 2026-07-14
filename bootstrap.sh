@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+BOOTSTRAP_USER="root"
+BOOTSTRAP_HOME="/root"
+
 export DEBIAN_FRONTEND=noninteractive
 
 log()  { printf '\n[%s] %s\n' "$(date '+%F %T')" "$*"; }
 warn() { printf '\n[WARN] %s\n' "$*" >&2; }
 die()  { printf '\n[ERROR] %s\n' "$*" >&2; exit 1; }
-
-BOOTSTRAP_USER="${SUDO_USER:-${USER:-root}}"
-BOOTSTRAP_HOME="$(getent passwd "$BOOTSTRAP_USER" | cut -d: -f6 2>/dev/null || true)"
 
 require_root() {
   if [[ "${EUID}" -ne 0 ]]; then
@@ -183,20 +183,27 @@ configure_user_shell() {
   local home="${BOOTSTRAP_HOME}"
   local profile="${home}/.profile"
   local bashrc="${home}/.bashrc"
+  local marker="# bootstrap-shell-config"
 
   [[ -n "$home" && -d "$home" ]] || return 0
 
   ensure_file "$profile"
   ensure_file "$bashrc"
 
-  ensure_line 'source ~/.bashrc' "$profile"
+  ensure_line '[[ -f ~/.bashrc ]] && source ~/.bashrc' "$profile"
 
-  {
-    printf "alias dir='ls -aFhl --color'\n"
-    printf "alias edit=\"/bin/nano -w\"\n"
-    printf "export EDITOR=\"/bin/nano\"\n"
-    printf "PS1=\"\\[\\033[1;32m\\][\\$(date '+%Y-%m-%d_%H:%M:%S')]\\[\\033[1;35m\\][\\u@\\h:\\w]\\$\\[\\033[0m\\] \"\n"
-  } >> "$bashrc"
+  if ! grep -Fqx "$marker" "$bashrc"; then
+    cat >> "$bashrc" <<'EOF'
+
+# bootstrap-shell-config
+alias dir='ls -aFhl --color'
+alias edit="/bin/nano -w"
+export EDITOR="/bin/nano"
+PS1="\[\033[1;32m\][\$(date '+%Y-%m-%d_%H:%M:%S')]\[\033[1;35m\][\u@\h:\w]\$\[\033[0m\] "
+fingerprintssh() { ssh-keygen -lf "$1" -E sha256; }
+fingerprintssl() { openssl pkey -pubin -in "$1" -outform DER | openssl dgst -sha256 -c; }
+EOF
+  fi
 
   chown "$BOOTSTRAP_USER:$BOOTSTRAP_USER" "$profile" "$bashrc" 2>/dev/null || true
 }
@@ -211,9 +218,9 @@ configure_ssh_key_scaffold() {
   install -m 600 -o "${BOOTSTRAP_USER}" -g "${BOOTSTRAP_USER}" /dev/null "${auth_keys}"
 
   if [[ ! -f "${ssh_dir}/id_ed25519" ]]; then
-    sudo -u "${BOOTSTRAP_USER}" ssh-keygen -t ed25519 -f "${ssh_dir}/id_ed25519" -N ""
+    ssh-keygen -t ed25519 -f "${ssh_dir}/id_ed25519" -N ""
   fi
-
+  
   grep -Fqx "$(cat "${ssh_dir}/id_ed25519.pub")" "${auth_keys}" || \
     cat "${ssh_dir}/id_ed25519.pub" >> "${auth_keys}"
 

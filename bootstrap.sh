@@ -339,8 +339,18 @@ show_summary() {
 
 upgrade_system() {
   apt_update_once
-  log "Upgrading installed packages"
+
+  log "Pre-cleaning old packages"
+  apt-get autoremove -y
+
+  log "Applying available package upgrades"
   apt-get upgrade -y
+
+  log "Applying distribution-style upgrades"
+  apt-get dist-upgrade -y
+
+  log "Post-cleaning old packages"
+  apt-get autoremove -y
 }
 
 warn() {

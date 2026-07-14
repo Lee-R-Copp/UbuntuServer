@@ -182,6 +182,28 @@ EOF
   fi
 }
 
+configure_user_shell() {
+  local home="${BOOTSTRAP_HOME}"
+  local profile="${home}/.profile"
+  local bashrc="${home}/.bashrc"
+
+  [[ -n "$home" && -d "$home" ]] || return 0
+
+  ensure_file "$profile"
+  ensure_file "$bashrc"
+
+  ensure_line 'source ~/.bashrc' "$profile"
+
+  {
+    printf "alias dir='ls -aFhl --color'\n"
+    printf "alias edit=\"/bin/nano -w\"\n"
+    printf "export EDITOR=\"/bin/nano\"\n"
+    printf "PS1=\"\\[\\033[1;32m\\][\\$(date '+%Y-%m-%d_%H:%M:%S')]\\[\\033[1;35m\\][\\u@\\h:\\w]\\$\\[\\033[0m\\] \"\n"
+  } >> "$bashrc"
+
+  chown "$BOOTSTRAP_USER:$BOOTSTRAP_USER" "$profile" "$bashrc" 2>/dev/null || true
+}
+
 configure_nanorc() {
   write_file_if_changed /etc/nanorc <<'EOF'
 set linenumbers
@@ -256,6 +278,7 @@ main() {
   configure_nanorc
   configure_bash_environment
   create_script_dirs
+  configure_user_shell
   show_summary
 }
 

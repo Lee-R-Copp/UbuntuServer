@@ -33,7 +33,7 @@ EOF
 configure_nanorc() {
   write_file_if_changed /etc/nanorc <<'EOF'
 set linenumbers
-set mouse
+unset mouse # disabled: interferes with Putty copy/paste
 set autoindent
 set tabsize 2
 set tabstospaces
@@ -86,13 +86,18 @@ EOF
 }
 
 configure_ssh_key_scaffold() {
-  local ssh_dir="${BOOTSTRAP_HOME}/.ssh"
+  local ssh_dir="/root/.ssh"
   local auth_keys="${ssh_dir}/authorized_keys"
 
-  [[ -d "${BOOTSTRAP_HOME}" ]] || die "Bootstrap user home not found."
+  [[ -d "/root" ]] || die "Bootstrap user home not found."
 
   install -d -m 700 "${ssh_dir}"
-  install -m 600 /dev/null "${auth_keys}"
+
+  if [[ ! -f "${auth_keys}" ]]; then
+    install -m 600 /dev/null "${auth_keys}"
+  else
+    chmod 600 "${auth_keys}"
+  fi
 
   if [[ ! -f "${ssh_dir}/id_ed25519" ]]; then
     log "Generating root Ed25519 SSH key"
@@ -252,17 +257,40 @@ log() {
 main() {
   require_root
   require_ubuntu
+
+  log "Running install_packages"
   install_packages
+
+  log "Running upgrade_system"
   upgrade_system
+
+  log "Running disable_auto_updates"
   disable_auto_updates
+
+  log "Running configure_timezone"
   configure_timezone "Etc/UTC"
+
+  log "Running configure_time_sync"
   configure_time_sync 90
+
+  log "Running configure_nanorc"
   configure_nanorc
+
+  log "Running configure_bash_environment"
   configure_bash_environment
+
+  log "Running create_script_dirs"
   create_script_dirs
+
+  log "Running configure_user_shell"
   configure_user_shell
+
+  log "Running configure_ssh_key_scaffold"
   configure_ssh_key_scaffold
+
+  log "Running configure_ssh"
   configure_ssh
+
   show_summary
 }
 
@@ -335,11 +363,13 @@ write_file_if_changed() {
   if [[ ! -f "$target" ]] || ! cmp -s "$tmp" "$target"; then
     install -m 0644 "$tmp" "$target"
     rm -f "$tmp"
+    log "Updated ${target}"
     return 0
   fi
 
   rm -f "$tmp"
-  return 1
+  log "No changes needed for ${target}"
+  return 0
 }
 
 main "$@"

@@ -137,6 +137,29 @@ configure_timezone() {
   fi
 }
 
+configure_time_sync() {
+  local timeout="${1:-90}"
+  local elapsed=0
+
+  log "Enabling NTP time synchronization"
+  timedatectl set-ntp true || die "Failed to enable NTP via timedatectl."
+
+  systemctl enable --now systemd-timesyncd.service >/dev/null 2>&1 || \
+    die "Failed to enable systemd-timesyncd.service."
+
+  while (( elapsed < timeout )); do
+    if [[ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" == "yes" ]]; then
+      log "NTP synchronization confirmed"
+      return 0
+    fi
+    sleep 3
+    elapsed=$((elapsed + 3))
+  done
+
+  journalctl -u systemd-timesyncd -n 20 --no-pager >&2 || true
+  die "NTP did not synchronize within ${timeout} seconds."
+}
+
 configure_ssh() {
   ensure_dir /etc/ssh/sshd_config.d
 
@@ -227,7 +250,8 @@ main() {
   install_packages
   upgrade_system
   disable_auto_updates
-  configure_timezone "America/Detroit"
+  configure_timezone "Etc/UTC"
+  configure_time_sync 90
   configure_ssh
   configure_nanorc
   configure_bash_environment

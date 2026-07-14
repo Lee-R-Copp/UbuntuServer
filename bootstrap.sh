@@ -204,6 +204,32 @@ configure_user_shell() {
   chown "$BOOTSTRAP_USER:$BOOTSTRAP_USER" "$profile" "$bashrc" 2>/dev/null || true
 }
 
+configure_ssh_key_scaffold() {
+  local ssh_dir="${BOOTSTRAP_HOME}/.ssh"
+  local auth_keys="${ssh_dir}/authorized_keys"
+
+  [[ -n "${BOOTSTRAP_HOME}" && -d "${BOOTSTRAP_HOME}" ]] || die "Bootstrap user home not found."
+
+  install -d -m 700 -o "${BOOTSTRAP_USER}" -g "${BOOTSTRAP_USER}" "${ssh_dir}"
+  install -m 600 -o "${BOOTSTRAP_USER}" -g "${BOOTSTRAP_USER}" /dev/null "${auth_keys}"
+
+  if [[ ! -f "${ssh_dir}/id_ed25519" ]]; then
+    sudo -u "${BOOTSTRAP_USER}" ssh-keygen -t ed25519 -f "${ssh_dir}/id_ed25519" -N ""
+  fi
+
+  grep -Fqx "$(cat "${ssh_dir}/id_ed25519.pub")" "${auth_keys}" || \
+    cat "${ssh_dir}/id_ed25519.pub" >> "${auth_keys}"
+
+  chown "${BOOTSTRAP_USER}:${BOOTSTRAP_USER}" \
+    "${ssh_dir}/id_ed25519" \
+    "${ssh_dir}/id_ed25519.pub" \
+    "${auth_keys}"
+
+  chmod 700 "${ssh_dir}"
+  chmod 600 "${ssh_dir}/id_ed25519" "${auth_keys}"
+  chmod 644 "${ssh_dir}/id_ed25519.pub"
+}
+
 configure_nanorc() {
   write_file_if_changed /etc/nanorc <<'EOF'
 set linenumbers
@@ -279,6 +305,7 @@ main() {
   configure_bash_environment
   create_script_dirs
   configure_user_shell
+  configure_ssh_key_scaffold
   show_summary
 }
 

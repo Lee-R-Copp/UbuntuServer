@@ -141,11 +141,8 @@ configure_time_sync() {
   local timeout="${1:-90}"
   local elapsed=0
 
-  log "Enabling NTP time synchronization"
+  log "Ensuring NTP time synchronization is enabled"
   timedatectl set-ntp true || die "Failed to enable NTP via timedatectl."
-
-  systemctl enable --now systemd-timesyncd.service >/dev/null 2>&1 || \
-    die "Failed to enable systemd-timesyncd.service."
 
   while (( elapsed < timeout )); do
     if [[ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" == "yes" ]]; then
@@ -156,8 +153,8 @@ configure_time_sync() {
     elapsed=$((elapsed + 3))
   done
 
-  journalctl -u systemd-timesyncd -n 20 --no-pager >&2 || true
-  die "NTP did not synchronize within ${timeout} seconds."
+  timedatectl status >&2 || true
+  die "NTP did not report synchronized within ${timeout} seconds."
 }
 
 configure_ssh() {

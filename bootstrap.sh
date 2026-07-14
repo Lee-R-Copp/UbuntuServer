@@ -257,12 +257,12 @@ main() {
   disable_auto_updates
   configure_timezone "Etc/UTC"
   configure_time_sync 90
-  configure_ssh
   configure_nanorc
   configure_bash_environment
   create_script_dirs
   configure_user_shell
   configure_ssh_key_scaffold
+  configure_ssh
   show_summary
 }
 

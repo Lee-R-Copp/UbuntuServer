@@ -32,7 +32,7 @@ EOF
 
 configure_nanorc() {
   write_file_if_changed /etc/nanorc <<'EOF'
-set linenumbers
+unset linenumbers # disabled: interferes with copy/paste
 unset mouse # disabled: interferes with Putty copy/paste
 set autoindent
 set tabsize 2

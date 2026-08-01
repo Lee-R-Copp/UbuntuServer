@@ -1,5 +1,5 @@
 printf "source .bashrc\n" >> ~/.profile
-printf "alias dir=\047ls -aFhl --color\047\n" > ~/.bashrc
+printf "alias dir=\047LC_ALL=C ls -aFhl --color\047\n" > ~/.bashrc
 printf "alias edit=\042/bin/nano -w\042\n" >> ~/.bashrc
 printf "\n" >> ~/.bashrc
 printf "export EDITOR=\042/bin/nano\042\n" >> ~/.bashrc
